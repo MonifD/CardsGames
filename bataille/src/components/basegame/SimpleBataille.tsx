@@ -2,7 +2,8 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { genererPaquetMelange  } from "../../utils/ImagesLoader"; 
 import { Cartes } from "../../Interfaces/Cartes"; 
-import { gererTourDeBataille } from "../../mode/ModeJeu";  
+import { gererTourDeBataille } from "../../mode/ModeJeu";
+import { voirProchaineCarte } from "../../mode/ProchaineCarte";  
 
 const cardBack = "/img/cards/Red_back.jpg"; 
 
@@ -13,7 +14,8 @@ const BatailleSimple = () => {
   const [carteOrdinateur, setCarteOrdinateur] = useState<Cartes | null>(null);
   const [message, setMessage] = useState("");
   const [partieTerminee, setPartieTerminee] = useState(false);
-  const [cartesBrulees, setCartesBrulees] = useState<Cartes[]>([]);  
+  const [cartesBrulees, setCartesBrulees] = useState<Cartes[]>([]);
+  const [prochaineCarteJoueur, setProchaineCarteJoueur] = useState<Cartes | null>(null);
 
   // fonction qui va me permettre de remmetre le jeu à 0
   const initialiserJeu = () => {
@@ -25,6 +27,7 @@ const BatailleSimple = () => {
     setMessage("");
     setPartieTerminee(false);
     setCartesBrulees([]);
+    setProchaineCarteJoueur(null);
   };
 
   // apple de la fonction de remis a 0
@@ -63,6 +66,8 @@ const BatailleSimple = () => {
       setCarteJoueur,
       setCarteOrdinateur
     );
+    const prochaineCarte = voirProchaineCarte(mainJoueur.slice(1));
+    setProchaineCarteJoueur(prochaineCarte);
   };
 
   return (
@@ -103,6 +108,22 @@ const BatailleSimple = () => {
               />
             )}
           </div>
+            {/* Affichage de la prochaine carte du joueur */}
+            <div className="mt-4">
+                <h3 className="text-md font-bold">Prochaine carte :</h3>
+                {prochaineCarteJoueur ? (
+                  <img
+                    src={prochaineCarteJoueur.image}
+                    alt="Prochaine carte du joueur"
+                    className="w-24 h-36"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src = "/img/cards/default.jpg";
+                    }}
+                  />
+                ) : (
+                  <p>Aucune carte suivante</p>
+                )}
+            </div>
         </div>
 
         {/* Zone centrale */}
