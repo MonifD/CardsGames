@@ -4,7 +4,7 @@
 // Génération d'un paquet mélangé (source : https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array)
 import { Cartes } from "../Interfaces/Cartes";
 
-export const generateShuffledDeck = (): Cartes[] => {
+export const genererPaquetMelange  = (): Cartes[] => {
   const suits = ["C", "D", "H", "S"];
   const values = [
     { value: 2, label: "2" },

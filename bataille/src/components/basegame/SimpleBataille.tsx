@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { generateShuffledDeck } from "../../utils/ImagesLoader"; 
+import { genererPaquetMelange  } from "../../utils/ImagesLoader"; 
 import { Cartes } from "../../Interfaces/Cartes"; 
 import { gererTourDeBataille } from "../../mode/ModeJeu";  
 
@@ -17,7 +17,7 @@ const BatailleSimple = () => {
 
   // fonction qui va me permettre de remmetre le jeu à 0
   const initialiserJeu = () => {
-    const paquetMele = generateShuffledDeck(); 
+    const paquetMele = genererPaquetMelange (); 
     setMainJoueur(paquetMele.slice(0, 26)); 
     setMainOrdinateur(paquetMele.slice(26)); 
     setCarteJoueur(null);
