@@ -1,6 +1,6 @@
 import { Cartes } from "../Interfaces/Cartes";
 
-// cette fonction a le mécaniqme du jeu avec le fais de si les joueur ont des cartes similaires ou tout simplement le jeu de base
+// cette fonction a la logique du jeu avec les cas de égalite et le cas gagnant
 
 export const gererTourDeBataille = (
   carteJoueur: Cartes,
