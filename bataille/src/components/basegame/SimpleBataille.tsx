@@ -1,20 +1,22 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { generateShuffledDeck } from "../../utils/ImagesLoader"; // Source de la fonction de création d'un paquet mélangé
-import { Card } from "../../Interfaces/Card"; // Importation du type Card pour la gestion des cartes
+import { generateShuffledDeck } from "../../utils/ImagesLoader"; 
+import { Cartes } from "../../Interfaces/Cartes"; 
+import { gererTourDeBataille } from "../../mode/ModeJeu"; 
 
 const cardBack = "/img/cards/Red_back.jpg"; 
 
 const BatailleSimple = () => {
-  const [mainJoueur, setMainJoueur] = useState<Card[]>([]); 
-  const [mainOrdinateur, setMainOrdinateur] = useState<Card[]>([]); 
-  const [carteJoueur, setCarteJoueur] = useState<Card | null>(null); 
-  const [carteOrdinateur, setCarteOrdinateur] = useState<Card | null>(null);
+  const [mainJoueur, setMainJoueur] = useState<Cartes[]>([]); 
+  const [mainOrdinateur, setMainOrdinateur] = useState<Cartes[]>([]); 
+  const [carteJoueur, setCarteJoueur] = useState<Cartes | null>(null); 
+  const [carteOrdinateur, setCarteOrdinateur] = useState<Cartes | null>(null);
   const [message, setMessage] = useState("");
   const [partieTerminee, setPartieTerminee] = useState(false);
+  const [cartesBrulees, setCartesBrulees] = useState<Cartes[]>([]);  
 
   useEffect(() => {
-    const paquetMele = generateShuffledDeck(); // Génération d'un paquet mélangé (source : https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array)
+    const paquetMele = generateShuffledDeck(); 
     setMainJoueur(paquetMele.slice(0, 26)); 
     setMainOrdinateur(paquetMele.slice(26)); 
   }, []);
@@ -35,27 +37,21 @@ const BatailleSimple = () => {
     setCarteJoueur(nouvelleCarteJoueur); 
     setCarteOrdinateur(nouvelleCarteOrdinateur);
 
-    if (nouvelleCarteJoueur.value > nouvelleCarteOrdinateur.value) {
-      setMessage("Le joueur gagne ce tour !");
-      setMainJoueur([...mainJoueur.slice(1), nouvelleCarteJoueur, nouvelleCarteOrdinateur]);
-      setMainOrdinateur(mainOrdinateur.slice(1));
-    } else if (nouvelleCarteJoueur.value < nouvelleCarteOrdinateur.value) {
-      setMessage("L'ordinateur gagne ce tour !");
-      setMainOrdinateur([...mainOrdinateur.slice(1), nouvelleCarteJoueur, nouvelleCarteOrdinateur]);
-      setMainJoueur(mainJoueur.slice(1));
-    } else {
-      setMessage("Égalité !");
-      setMainJoueur(mainJoueur.slice(1));
-      setMainOrdinateur(mainOrdinateur.slice(1));
-    }
-
-    if (mainJoueur.length === 1 && mainOrdinateur.length === 1) {
-      setTimeout(() => {
-        const gagnantFinal = mainJoueur.length > mainOrdinateur.length ? "Joueur" : "Ordinateur";
-        setMessage(`Fin du jeu ! Le gagnant est : ${gagnantFinal}`);
-        setPartieTerminee(true);
-      }, 1000);
-    }
+    // Appel à gererTourDeBataille pour gérer la logique de l'égalité et des cartes brûlées
+    gererTourDeBataille(
+      nouvelleCarteJoueur,
+      nouvelleCarteOrdinateur,
+      mainJoueur,
+      mainOrdinateur,
+      cartesBrulees,
+      setMainJoueur,
+      setMainOrdinateur,
+      setCartesBrulees,
+      setMessage,
+      setPartieTerminee,
+      setCarteJoueur,
+      setCarteOrdinateur
+    );
   };
 
   return (
@@ -90,6 +86,27 @@ const BatailleSimple = () => {
             />
           </button>
           <p className="mt-4 mb-8">{message}</p>
+          
+          {/* Affichage des cartes brûlées */}
+          {cartesBrulees.length > 0 && (
+            <div className="mt-4">
+              <h3 className="text-lg font-bold">Cartes brûlées :</h3>
+              <div className="flex">
+                {cartesBrulees.map((carte, index) => (
+                  <img
+                    key={index}
+                    src={carte.image}
+                    alt={`Carte Brûlée ${index}`}
+                    width="50"
+                    className="mx-2"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src = "/img/cards/default.jpg"; 
+                    }}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
         </div>
 
         <div className="text-center">

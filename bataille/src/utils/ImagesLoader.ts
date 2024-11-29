@@ -2,9 +2,9 @@
 //cette fonction va me permettre de charger les carte 
 //et les mettre dans une liste que je peux la traiter plus trad dans SimpleBataille.tsx
 // Génération d'un paquet mélangé (source : https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array)
-import { Card } from "../Interfaces/Card";
+import { Cartes } from "../Interfaces/Cartes";
 
-export const generateShuffledDeck = (): Card[] => {
+export const generateShuffledDeck = (): Cartes[] => {
   const suits = ["C", "D", "H", "S"];
   const values = [
     { value: 2, label: "2" },
@@ -22,7 +22,7 @@ export const generateShuffledDeck = (): Card[] => {
     { value: 14, label: "A" },
   ];
 
-  const fullDeck: Card[] = [];
+  const fullDeck: Cartes[] = [];
   for (const suit of suits) {
     for (const { value, label } of values) {
       const image = `/img/cards/${label}${suit}.jpg`;
